@@ -1,5 +1,5 @@
 import { Webhook } from "svix";
-import connectDb from "@/config/db";
+// import connectDb from "@/config/db";
 import User from "@/models/User";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -45,7 +45,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     image: typedData.image_url,
   };
 
-  await connectDb();
+  // await connectDb();
 
   switch (type) {
     case "user.created":
