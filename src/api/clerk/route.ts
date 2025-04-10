@@ -2,7 +2,7 @@ import { Webhook } from "svix";
 import connectDb from "@/config/db";
 import User from "@/models/User";
 import { headers } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 interface SvixHeaders {
   [key: string]: string;

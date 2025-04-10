@@ -8,6 +8,7 @@ interface Props {
 }
 const PromptBox = ({ isLoading, setIsLoading }: Props) => {
   const [prompt, setPrompt] = useState("");
+  console.log(isLoading, setIsLoading);
 
   return (
     <form

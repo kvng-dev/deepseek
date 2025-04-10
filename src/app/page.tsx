@@ -9,6 +9,8 @@ export default function Home() {
   const [expand, setExpand] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  console.log(setMessages);
   return (
     <div className="">
       <div className="flex h-screen">
