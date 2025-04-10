@@ -1,36 +1,39 @@
-// import mongoose, { Mongoose } from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 
-// declare global {
-//   // Other global declarations can go here if needed
-// }
+// Extend globalThis type
+declare global {
+  interface GlobalThis {
+    _mongoose?: {
+      conn: Mongoose | null;
+      promise: Promise<Mongoose> | null;
+    };
+  }
+}
 
-// // Use global to persist connection across hot reloads in dev
-// const globalWithMongoose = global as typeof global & {
-//   _mongoose?: {
-//     conn: Mongoose | null;
-//     promise: Promise<Mongoose> | null;
-//   };
-// };
+// Safely cast globalThis to include _mongoose
+const globalWithMongoose = globalThis as unknown as GlobalThis;
 
-// const cached = globalWithMongoose._mongoose ?? {
-//   conn: null,
-//   promise: null,
-// };
+// Fallback to cached values or initialize
+globalWithMongoose._mongoose ??= {
+  conn: null,
+  promise: null,
+};
 
-// globalWithMongoose._mongoose = cached;
+export default async function connectDb(): Promise<Mongoose> {
+  if (globalWithMongoose._mongoose!.conn) {
+    return globalWithMongoose._mongoose!.conn;
+  }
 
-// export default async function connectDb(): Promise<Mongoose> {
-//   if (cached.conn) return cached.conn;
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("MONGODB_URI environment variable is not defined");
+  }
 
-//   if (!cached.promise) {
-//     const uri = process.env.MONGODB_URI;
-//     if (!uri) {
-//       throw new Error("MONGODB_URI environment variable is not defined");
-//     }
+  if (!globalWithMongoose._mongoose!.promise) {
+    globalWithMongoose._mongoose!.promise = mongoose.connect(uri);
+  }
 
-//     cached.promise = mongoose.connect(uri);
-//   }
-
-//   cached.conn = await cached.promise;
-//   return cached.conn;
-// }
+  globalWithMongoose._mongoose!.conn = await globalWithMongoose._mongoose!
+    .promise;
+  return globalWithMongoose._mongoose!.conn;
+}

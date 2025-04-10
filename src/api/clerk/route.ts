@@ -1,5 +1,5 @@
 import { Webhook } from "svix";
-// import connectDb from "@/config/db";
+import connectDb from "@/config/db";
 import User from "@/models/User";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -21,6 +21,7 @@ export async function POST(req: Request): Promise<NextResponse> {
   const svixHeaders: SvixHeaders = {
     "svix-id": headerPayload.get("svix-id") || "",
     "svix-signature": headerPayload.get("svix-signature") || "",
+    "svix-timestamp": headerPayload.get("svix-timestamp") || "",
   };
 
   const payload = await req.json();
@@ -45,7 +46,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     image: typedData.image_url,
   };
 
-  // await connectDb();
+  await connectDb();
 
   switch (type) {
     case "user.created":
